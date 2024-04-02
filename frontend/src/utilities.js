@@ -8,12 +8,17 @@ const draw = (predictions, ctx,capFaces) => {
           const size = [end[0] - start[0], end[1] - start[1]];
     
           // Render a rectangle over each detected face.
-          
-          ctx.beginPath();
-          ctx.lineWidth = "6";
-          ctx.strokeStyle = "red";
-          ctx.rect(start[0], start[1], size[0], size[1]);
-          ctx.stroke();
+         
+            ctx.beginPath();
+            ctx.lineWidth = "6";
+            ctx.strokeStyle = "red";
+            ctx.rect(start[0], start[1], size[0], size[1]);
+            ctx.stroke();
+          setTimeout(()=>{
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+          },2000)
+         
         }
       }
 

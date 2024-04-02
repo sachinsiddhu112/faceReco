@@ -12,15 +12,12 @@ cam{
     z-index: 9;
     width:600;
     height:400;
-    border: 2px solid red;
-    border-radius: 10px;
- 
+    
 }
 .canvas{
  
     position: absolute;
-    border: 2px solid yellow;
-    border-radius: 10px;
+    
     top:50px;
    
    

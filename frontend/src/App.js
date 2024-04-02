@@ -13,7 +13,7 @@ function App() {
   const blazeface = require('@tensorflow-models/blazeface')
   const capFaces = useRef(false);
   const [detectedFaces, setDetectedFaces] = useState([]);
- const [distances, setDistances] = useState([]);
+
 
   const runFacedetection = async () => {
 
@@ -93,36 +93,49 @@ function App() {
    
 
   
+    const distances = [];
 
     facesInDatabase.forEach((face) => {
-      const face1Landmarks = detectedFaces[0].landmarks;
-      const face2Landmarks = face.landmarks;
+        const face1Landmarks = detectedFaces[0].landmarks;
+        const face2Landmarks = face.landmarks;
     
-      // Calculate the distance between the landmarks
-      let distance = 0;
-      for (let i = 0; i < face1Landmarks.length; i++) {
-        const dx = face1Landmarks[i].x - face2Landmarks[i].x;
-        const dy = face1Landmarks[i].y - face2Landmarks[i].y;
-        distance += Math.sqrt(dx * dx + dy * dy);
-      }
-     console.log(distance)
-      // Add the calculated distance to the array
-      distances.push(distance);
+        // Check if both landmarks arrays have the same length
+        if (face1Landmarks.length === face2Landmarks.length) {
+            let distance = 0;
+    
+            // Calculate the distance between the landmarks
+            for (let i = 0; i < face1Landmarks.length; i++) {
+                const dx = face1Landmarks[i][0] - face2Landmarks[i][0];
+                const dy = face1Landmarks[i][1] - face2Landmarks[i][1];
+                distance += Math.sqrt(dx * dx + dy * dy);
+            }
+    
+            // Add the calculated distance to the array
+            distances.push(distance);
+            console.log(distances)
+        } else {
+            console.log("Mismatch in landmark array lengths, skipping comparison.");
+        }
     });
-    console.log(distances)
-    // Calculate average distance
-    const averageDistance = distances.reduce((acc, curr) => acc + curr, 0) / distances.length;
     
-    console.log(averageDistance);
+    // Check if distances array is empty before calculating average
+    if (distances.length > 0) {
+        // Calculate average distance
+        const averageDistance = distances.reduce((acc, curr) => acc + curr, 0) / distances.length;
+        console.log("Average distance:", averageDistance);
     
-    if (averageDistance < SIMILARITY_THRESHOLD) {
-      console.log('Faces are similar.');
+        // Check similarity based on threshold
+        if (averageDistance < SIMILARITY_THRESHOLD) {
+            console.log('Faces are similar.');
+        } else {
+            console.log('Faces are not similar.');
+        }
     } else {
-      console.log('Faces are not similar.');
+        console.log("No valid distances calculated.");
     }
     
 
-    // Check if the faces are similar or not based on the threshold
+    
 
   }
 
