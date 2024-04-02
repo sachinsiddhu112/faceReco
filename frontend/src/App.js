@@ -13,6 +13,7 @@ function App() {
   const blazeface = require('@tensorflow-models/blazeface')
   const capFaces = useRef(false);
   const [detectedFaces, setDetectedFaces] = useState([]);
+  
 
 
   const runFacedetection = async () => {
@@ -127,11 +128,14 @@ function App() {
         // Check similarity based on threshold
         if (averageDistance < SIMILARITY_THRESHOLD) {
             console.log('Faces are similar.');
+            alert("faces matched")
         } else {
             console.log('Faces are not similar.');
+            alert("faces not matched")
         }
     } else {
-        console.log("No valid distances calculated.");
+        alert("No valid distances calculated.");
+       
     }
     
 
