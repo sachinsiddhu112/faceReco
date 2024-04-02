@@ -80,6 +80,7 @@ function App() {
   const saveInDb = async () => {
 
     const res = await axios.post("https://br246fcf02.execute-api.eu-north-1.amazonaws.com/faceDB/faces", detectedFaces);
+    alert("saved in database");
 
   }
 
