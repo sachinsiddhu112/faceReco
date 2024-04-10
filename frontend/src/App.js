@@ -13,7 +13,8 @@ function App() {
   const blazeface = require('@tensorflow-models/blazeface')
   const capFaces = useRef(false);
   const [detectedFaces, setDetectedFaces] = useState([]);
-  
+  const matched=useRef(false);
+
 
 
   const runFacedetection = async () => {
@@ -87,60 +88,69 @@ function App() {
   const compareFaces = async () => {
     // Define a threshold for face similarity
     console.log("compare faces")
-    const SIMILARITY_THRESHOLD = 0.9;
+    const SIMILARITY_THRESHOLD = 25;
     const facesInDatabase = await getFaces();
     // Let's assume we are comparing the first two faces detected
     console.log(facesInDatabase)
 
-   
 
-  
-    const distances = [];
+
+
+
 
     facesInDatabase.forEach((face) => {
-        const face1Landmarks = detectedFaces[0].landmarks;
-        const face2Landmarks = face.landmarks;
-    
-        // Check if both landmarks arrays have the same length
-        if (face1Landmarks.length === face2Landmarks.length) {
-            let distance = 0;
-    
-            // Calculate the distance between the landmarks
-            for (let i = 0; i < face1Landmarks.length; i++) {
-                const dx = face1Landmarks[i][0] - face2Landmarks[i][0];
-                const dy = face1Landmarks[i][1] - face2Landmarks[i][1];
-                distance += Math.sqrt(dx * dx + dy * dy);
-            }
-    
-            // Add the calculated distance to the array
-            distances.push(distance);
-            console.log(distances)
-        } else {
-            console.log("Mismatch in landmark array lengths, skipping comparison.");
-        }
-    });
-    
-    // Check if distances array is empty before calculating average
-    if (distances.length > 0) {
-        // Calculate average distance
-        const averageDistance = distances.reduce((acc, curr) => acc + curr, 0) / distances.length;
-        console.log("Average distance:", averageDistance);
-    
-        // Check similarity based on threshold
-        if (averageDistance < SIMILARITY_THRESHOLD) {
-            console.log('Faces are similar.');
-            alert("faces matched")
-        } else {
-            console.log('Faces are not similar.');
-            alert("faces not matched")
-        }
-    } else {
-        alert("No valid distances calculated.");
-       
-    }
-    
 
-    
+      const face1Landmarks = detectedFaces[0].landmarks;
+      const face2Landmarks = face.landmarks;
+      const distances = [];
+      // Check if both landmarks arrays have the same length
+      if (face1Landmarks.length === face2Landmarks.length) {
+        let distance = 0;
+
+        // Calculate the distance between the landmarks
+        for (let i = 0; i < face1Landmarks.length; i++) {
+
+          const dx = face1Landmarks[i][0] - face2Landmarks[i][0];
+          const dy = face1Landmarks[i][1] - face2Landmarks[i][1];
+
+          distance = Math.sqrt(dx * dx + dy * dy);
+          // Add the calculated distance to the array
+          distances.push(distance);
+
+        }
+
+        // Check if distances array is empty before calculating average
+        if (distances.length > 0) {
+
+          // Calculate average distance
+
+          const averageDistance = distances.reduce((acc, curr) => acc + curr, 0) / distances.length;
+          console.log("Average distance:", averageDistance);
+
+          // Check similarity based on threshold
+          if (averageDistance < SIMILARITY_THRESHOLD) {
+            console.log('Faces are similar.');
+            matched.current=true;
+           
+          } else {
+            matched.current=false;
+            console.log('Faces are not similar.');
+            
+          }
+        } else {
+          alert("No valid distances calculated.");
+
+        }
+
+      } else {
+        console.log("Mismatch in landmark array lengths, skipping comparison.");
+      }
+    });
+
+
+
+matched?alert("face found in database"):alert("face not found in database.")
+
 
   }
 
